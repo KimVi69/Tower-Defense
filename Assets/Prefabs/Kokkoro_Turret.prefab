@@ -345,7 +345,7 @@ MonoBehaviour:
   fireRate: 0.4
   fireCountdown: 0
   sprite: {fileID: 962513918167374557}
-  damage: 163
+  damage: 173
   healthBar: {fileID: 3536537507063514997}
   healthUI: {fileID: 8659122740956946941}
   maxHealth: 682

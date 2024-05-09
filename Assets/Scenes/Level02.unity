@@ -14360,11 +14360,9 @@ MonoBehaviour:
     waypoint: {fileID: 293054045}
     spawnpoint: {fileID: 163729877}
     timeout: 100
-  timeBetweenWave: 2
+  timeBetweenWave: 3
   countdown: 3
   manager: {fileID: 1359544339}
-  isBossLevel: 0
-  bossMusic: {fileID: 0}
 --- !u!4 &1359544336
 Transform:
   m_ObjectHideFlags: 0
@@ -14463,7 +14461,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 485c6699fda1b0147984785ab93a0540, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.4
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0

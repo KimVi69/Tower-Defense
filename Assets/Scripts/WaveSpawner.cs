@@ -20,9 +20,6 @@ public class WaveSpawner : MonoBehaviour
 
     private float timeout;
 
-    public bool isBossLevel;
-    public AudioSource bossMusic;
-
     void Start()
     {
         EnemiesAlive = 0;
@@ -42,11 +39,6 @@ public class WaveSpawner : MonoBehaviour
         if (GameManager.gameEnded)
         {
             enabled = false;
-        }
-
-        if (waveIndex == waves.Length - 2 && isBossLevel)
-        {
-            bossMusic.Play();
         }
 
         if (timeout > 0)

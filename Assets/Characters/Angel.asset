@@ -15,7 +15,7 @@ MonoBehaviour:
   prefab: {fileID: 97075166757499436, guid: c64655ea62869d743b444cca6e6df5cc, type: 3}
   cost: 14
   isGroundTurret: 1
-  cooldown: 70
+  cooldown: 15
   icon: {fileID: 21300000, guid: c36e4b686b0d3f540887ecf4f15a5375, type: 3}
   classIcon: {fileID: 21300000, guid: 1760c425bfc47484ca0201c61bc41679, type: 3}
   classColor: {r: 0.9921569, g: 0.85098046, b: 0.09019608, a: 1}

@@ -418,7 +418,7 @@ MonoBehaviour:
   offsetZ: 0
   enemyTag: Enemy
   enemyTag2: Flying Enemy
-  fireRate: 0.2
+  fireRate: 0.3
   fireCountdown: 0
   flip: 0
   sprite: {fileID: 2496943579883275512}

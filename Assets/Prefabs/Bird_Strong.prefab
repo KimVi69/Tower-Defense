@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1
-  maxHealth: 1600
+  maxHealth: 3700
   damage: 10
   rangeX: 2.5
   rangeZ: 2
