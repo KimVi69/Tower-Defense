@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CompleteLevel : MonoBehaviour
@@ -12,7 +10,10 @@ public class CompleteLevel : MonoBehaviour
 
     public void Menu()
     {
-        PlayerPrefs.SetInt("levelReached", levelToUnlock);
+        if (PlayerPrefs.GetInt("levelReached", 1) < levelToUnlock)
+        {
+            PlayerPrefs.SetInt("levelReached", levelToUnlock);
+        }
         sceneFader.FadeTo(levelToLoad);
     }
 }

@@ -1,9 +1,9 @@
-using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static bool gameEnded;
+    public static bool gamePaused;
 
     public GameObject gameOverUI;
     public GameObject gameOverTextUI;
@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         gameEnded = false;
+        gamePaused = false;
     }
 
     void Update()
@@ -47,6 +48,8 @@ public class GameManager : MonoBehaviour
 
     public void ToggleGameSpeed()
     {
+        BuildManager.instance.SelectTurretToBuild(null, null);
+
         if (PlayerStats.gameSpeed == 1)
         {
             PlayerStats.gameSpeed = 2;

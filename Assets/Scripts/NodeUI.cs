@@ -20,26 +20,33 @@ public class NodeUI : MonoBehaviour
 
         transform.position = target.transform.position;
 
-        if (target.turret.GetComponent<Turret>() != null)
-        {
-            rangeUI.GetComponent<RectTransform>().sizeDelta = target.turret.GetComponent<Turret>().
-            rangeUI.GetComponent<RectTransform>().sizeDelta;
+        Turret turret = target.turret.GetComponent<Turret>();
 
-            rangeUI.GetComponent<RectTransform>().anchoredPosition = target.turret.GetComponent<Turret>().
-            rangeUI.GetComponent<RectTransform>().anchoredPosition;
+        if (turret != null)
+        {
+            SetRangeUI(turret.rangeUI);
         }
         else
         {
-            rangeUI.GetComponent<RectTransform>().sizeDelta = target.turret.GetComponent<Healer>().
-            rangeUI.GetComponent<RectTransform>().sizeDelta;
+            Healer healer = target.turret.GetComponent<Healer>();
 
-            rangeUI.GetComponent<RectTransform>().anchoredPosition = target.turret.GetComponent<Healer>().
-            rangeUI.GetComponent<RectTransform>().anchoredPosition;
+            if (healer != null)
+            {
+                SetRangeUI(healer.rangeUI);
+            }
         }
 
         ui.SetActive(true);
         rangeUI.SetActive(true);
         Time.timeScale = 0.25f;
+    }
+
+    private void SetRangeUI(GameObject newRangeUIObject)
+    {
+        RectTransform newRangeUI = newRangeUIObject.GetComponent<RectTransform>();
+
+        rangeUI.GetComponent<RectTransform>().sizeDelta = newRangeUI.sizeDelta;
+        rangeUI.GetComponent<RectTransform>().anchoredPosition = newRangeUI.anchoredPosition;
     }
 
     public void Hide()

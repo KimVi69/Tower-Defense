@@ -1,13 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class LevelSelector : MonoBehaviour
 {
     public SceneFader Fader;
 
     public GameObject[] levelButtons;
+
+    public string levelToLoad;
+
+    public string mainTitle = "MainMenu";
 
     void Start()
     {
@@ -20,8 +21,18 @@ public class LevelSelector : MonoBehaviour
         }
     }
 
-    public void Select(string levelToLoad)
+    public void Select(string level)
+    {
+        levelToLoad = level;
+    }
+
+    public void StartLevel()
     {
         Fader.FadeTo(levelToLoad);
+    }
+
+    public void ReturnToTitle()
+    {
+        Fader.FadeTo(mainTitle);
     }
 }

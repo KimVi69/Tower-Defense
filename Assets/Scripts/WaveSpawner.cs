@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading;
 using UnityEngine;
 
 public class WaveSpawner : MonoBehaviour
@@ -11,45 +12,65 @@ public class WaveSpawner : MonoBehaviour
 
     public Wave[] waves;
 
-    public Transform spawnPoint;
-
     public float timeBetweenWave = 15f;
     public float countdown = 1f;
 
     private int waveIndex = 0;
     public GameManager manager;
 
+    private float timeout;
+
+    public bool isBossLevel;
+    public AudioSource bossMusic;
+
     void Start()
     {
         EnemiesAlive = 0;
+
         foreach (Wave wave in waves)
         {
             totalEnemy += wave.count;
         }
+
         enemyDefeat = 0;
+
+        timeout = 0;
     }
 
     void Update()
     {
-        if (EnemiesAlive > 0)
+        if (GameManager.gameEnded)
+        {
+            enabled = false;
+        }
+
+        if (waveIndex == waves.Length - 2 && isBossLevel)
+        {
+            bossMusic.Play();
+        }
+
+        if (timeout > 0)
+        {
+            timeout -= Time.deltaTime;
+        }
+
+        if (EnemiesAlive > 0 && timeout > 0)
         {
             return;
         }
 
-        if (waveIndex == waves.Length && PlayerStats.Lives > 0)
+        if (enemyDefeat == totalEnemy && PlayerStats.Lives > 0)
         {
             manager.WinGame();
-            enabled = false;
-        }
-        else if (waveIndex == waves.Length && PlayerStats.Lives <= 0)
-        {
-            enabled = false;
         }
 
-        if (countdown <= 0f)
+        if (countdown <= 0f && waveIndex < waves.Length)
         {
             StartCoroutine(SpawnWave());
             countdown = timeBetweenWave;
+
+            timeout = waves[waveIndex].timeout;
+
             return;
         }
         countdown -= Time.deltaTime;
@@ -63,15 +84,16 @@ public class WaveSpawner : MonoBehaviour
 
         for (int i = 0; i < wave.count; i++)
         {
-            SpawnEnemy(wave.enemy);
+            SpawnEnemy(wave.enemy, wave.spawnpoint, wave.waypoint);
             yield return new WaitForSeconds(wave.rate);
         }
 
         waveIndex++;
     }
 
-    void SpawnEnemy(GameObject enemy)
+    void SpawnEnemy(GameObject enemy, Transform spawnpoint, Waypoint waypoint)
     {
-        Instantiate(enemy, spawnPoint.position, spawnPoint.rotation);
+        GameObject Enemy = Instantiate(enemy, spawnpoint.position, Quaternion.identity);
+        Enemy.GetComponent<EnemyMovement>().waypoint = waypoint;
     }
 }

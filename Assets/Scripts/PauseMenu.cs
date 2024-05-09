@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     public GameObject retreatButton;
-
+    public GameObject quitAlert;
     public GameObject ui;
 
     public SceneFader sceneFader;
@@ -23,17 +23,20 @@ public class PauseMenu : MonoBehaviour
 
     public void Toggle()
     {
+        quitAlert.SetActive(false);
         ui.SetActive(!ui.activeSelf);
-        BuildManager.instance.SelectTurretToBuild(null);
+        BuildManager.instance.SelectTurretToBuild(null, null);
 
         if (ui.activeSelf)
         {
             Time.timeScale = 0;
+            GameManager.gamePaused = true;
             BuildManager.instance.GetComponent<AudioSource>().Pause();       
         }
         else
         {
             Time.timeScale = PlayerStats.gameSpeed;
+            GameManager.gamePaused = false;
             BuildManager.instance.GetComponent<AudioSource>().UnPause();
             retreatButton.SetActive(true);
         }

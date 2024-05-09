@@ -94,18 +94,18 @@ ScriptedImporter:
     spritePosition: {x: 0, y: 0}
   mosaicSpriteImportData: []
   rigSpriteImportData:
-  - name: Layer 2
+  - name: Right Wing
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
-    alignment: 0
+    pivot: {x: 0.5, y: 0.07}
+    alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 269
+      x: 268
       y: 4
       width: 174
       height: 136
-    spriteID: d5d0e7070688eb642bef5e4985159f0b
+    spriteID: 080f0ac6f145ed64abea5b1edbd7f8b9
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -115,7 +115,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 269, y: 4}
     spritePosition: {x: 14, y: 84}
-  - name: Layer 4
+  - name: Body
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -126,7 +126,7 @@ ScriptedImporter:
       y: 4
       width: 257
       height: 144
-    spriteID: 94505f0ef690c3049a10d078b53599d1
+    spriteID: 9aa97d81b5e32144da45d89f740d21d2
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -136,18 +136,18 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
     spritePosition: {x: 0, y: 0}
-  - name: Layer 1
+  - name: Left Wing
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
-    alignment: 0
+    pivot: {x: 0.5, y: 0.05}
+    alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
       x: 4
       y: 156
-      width: 188
+      width: 164
       height: 111
-    spriteID: 7478357b1d76d3c40894ac8f968b5ddc
+    spriteID: aa4080507177ec44e864af6060e062e4
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -156,7 +156,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 4, y: 156}
-    spritePosition: {x: 156, y: 90}
+    spritePosition: {x: 180, y: 91}
   characterData:
     bones: []
     parts: []
@@ -241,31 +241,31 @@ ScriptedImporter:
   resliceFromLayer: 0
   mosaicPSDLayers: []
   rigPSDLayers:
-  - name: Layer 2
-    spriteName: Layer 2
+  - name: Right Wing
+    spriteName: Right Wing
     isGroup: 0
     parentIndex: -1
-    spriteID: d5d0e7070688eb642bef5e4985159f0b
+    spriteID: 080f0ac6f145ed64abea5b1edbd7f8b9
     layerID: 4
     mosaicPosition: {x: 269, y: 4}
     flatten: 0
     isImported: 1
     isVisible: 1
-  - name: Layer 4
-    spriteName: Layer 4
+  - name: Body
+    spriteName: Body
     isGroup: 0
     parentIndex: -1
-    spriteID: 94505f0ef690c3049a10d078b53599d1
+    spriteID: 9aa97d81b5e32144da45d89f740d21d2
     layerID: 6
     mosaicPosition: {x: 4, y: 4}
     flatten: 0
     isImported: 1
     isVisible: 1
-  - name: Layer 1
-    spriteName: Layer 1
+  - name: Left Wing
+    spriteName: Left Wing
     isGroup: 0
     parentIndex: -1
-    spriteID: 7478357b1d76d3c40894ac8f968b5ddc
+    spriteID: aa4080507177ec44e864af6060e062e4
     layerID: 3
     mosaicPosition: {x: 4, y: 156}
     flatten: 0

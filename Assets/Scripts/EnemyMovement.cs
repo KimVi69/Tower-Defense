@@ -8,13 +8,15 @@ public class EnemyMovement : MonoBehaviour
 
     private Transform target;
 
+    public Waypoint waypoint;
+
     private int wavepointIndex = 0;
 
     void Start()
     {
         enemy = GetComponent<Enemy>();
 
-        target = Waypoint.points[0];
+        target = waypoint.points[0];
     }
 
     void Update()
@@ -31,19 +33,20 @@ public class EnemyMovement : MonoBehaviour
 
     void GetNextWaypoint()
     {
-        if (wavepointIndex >= Waypoint.points.Length - 1)
+        if (wavepointIndex >= waypoint.points.Length - 1)
         {
             EndPath();
             return;
         }
 
         wavepointIndex++;
-        target = Waypoint.points[wavepointIndex];
+        target = waypoint.points[wavepointIndex];
     }
 
     void EndPath()
     {
         PlayerStats.Lives--;
+        if (PlayerStats.Lives > 0)
         BuildManager.instance.PlayErrorSound();
         GetComponent<Enemy>().DeathAnimation();
     }

@@ -1,9 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Turret : MonoBehaviour
 {
-    public TurretBlueprint turretBlueprint;
     public GameObject rangeUI;
     private Transform target;
     private Animator animator;
@@ -13,10 +13,11 @@ public class Turret : MonoBehaviour
     public float offsetZ = 0f;
     private float flipSpeed = 20f;
     public string enemyTag = "Enemy";
+    public string enemyTag2 = "Enemy";
     [Range(0f, 1f)]
     public float fireRate = 1f;
-    private float fireCountdown = 0f;
-    private bool flip = false;
+    public float fireCountdown = 0f;
+    public bool flip = false;
     public GameObject sprite;
     public int damage = 50;
    
@@ -28,9 +29,19 @@ public class Turret : MonoBehaviour
     public float health;
 
     public AudioSource attackSFX;
+    public float flipDirection;
 
     void Start()
     {
+        if (BuildManager.instance.isMapFlipped)
+        {
+            sprite.transform.localScale = new Vector3(-sprite.transform.localScale.x, sprite.transform.localScale.y, sprite.transform.localScale.z);
+            rangeUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(-rangeUI.GetComponent<RectTransform>().anchoredPosition.x, rangeUI.GetComponent<RectTransform>().anchoredPosition.y);
+            offsetX = -offsetX;
+        }
+
+        flipDirection = sprite.transform.localScale.x;
+        startCooldown = false;
         rangeUI.SetActive(false);
         health = maxHealth;
         animator = GetComponent<Animator>();
@@ -42,9 +53,29 @@ public class Turret : MonoBehaviour
         if (GameManager.gameEnded)
         {
             animator.enabled = false;
-            if (healthUI != null)
+            healthUI.SetActive(false);
+            return;
+        }
+
+        if (GameManager.gamePaused)
+        {
+            healthUI.SetActive(false);
+            return;
+        }
+
+        if (health < maxHealth)
+        {
+            healthUI.SetActive(true);
+        }
+        else
+        {
             healthUI.SetActive(false);
         }
+
+        if (startCooldown && fireCountdown > 0)
+            fireCountdown -= Time.deltaTime;
+
+        Flip();
 
         if (target == null)
             return;
@@ -52,13 +83,12 @@ public class Turret : MonoBehaviour
         if (fireCountdown <= 0f)
         {
             startCooldown = false;
-            bool shouldFlip = target.position.x < gameObject.transform.position.x;
 
-            if (shouldFlip)
+            if (flipDirection * (target.position.x - transform.position.x) < 0)
             {
                 flip = true;
             }
-            else
+            else   
             {
                 flip = false;
             }
@@ -67,13 +97,13 @@ public class Turret : MonoBehaviour
 
             fireCountdown = 1f / fireRate;
         }
+    }
 
-        if (startCooldown)
-        fireCountdown -= Time.deltaTime;
-
-        float targetScaleX = flip ? -1f : 1f;
+    void Flip()
+    {
+        float targetScaleX = flip ? -flipDirection : flipDirection;
         float newScaleX = Mathf.MoveTowards(sprite.transform.localScale.x, targetScaleX, Time.deltaTime * flipSpeed);
-        sprite.transform.localScale = new Vector3(newScaleX, 1f, 1f);
+        sprite.transform.localScale = new Vector3(newScaleX, sprite.transform.localScale.y, sprite.transform.localScale.z);
     }
 
     public void Attack()
@@ -92,9 +122,12 @@ public class Turret : MonoBehaviour
 
         health = Mathf.Clamp(health, 0f, maxHealth);
 
-        healthUI.SetActive(true);
-
         healthBar.fillAmount = health / maxHealth;
+
+        if (health > 0)
+        {
+            animator.SetTrigger("hit");
+        }
 
         if (health <= 0)
         {
@@ -107,21 +140,39 @@ public class Turret : MonoBehaviour
         }
     }
 
+    public void Heal(int amount)
+    {
+        health += amount;
+
+        health = Mathf.Clamp(health, 0f, maxHealth);
+
+        healthBar.fillAmount = health / maxHealth;
+    }
+
     public void Die()
     {
-        turretBlueprint.button.SetActive(true);
-        turretBlueprint.button.GetComponent<TurretCooldown>().StartCooldown(turretBlueprint.cooldown, turretBlueprint);
         Destroy(gameObject);
     }
 
     void UpdateTarget()
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag(enemyTag);
+        GameObject[] Enemies = GameObject.FindGameObjectsWithTag(enemyTag);
+
+        if (enemyTag != enemyTag2)
+        {
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag(enemyTag);
+            GameObject[] enemies2 = GameObject.FindGameObjectsWithTag(enemyTag2);
+
+            List<GameObject> allEnemies = new List<GameObject>(enemies);
+            allEnemies.AddRange(enemies2);
+
+            Enemies = allEnemies.ToArray();
+        }
 
         float shortestDistance = Mathf.Infinity;
         GameObject nearestEnemy = null;
 
-        foreach (GameObject enemy in enemies)
+        foreach (GameObject enemy in Enemies)
         {
             Vector3 enemyPosition = enemy.transform.position;
             Vector3 towerPosition = transform.position + new Vector3(offsetX, 0f, offsetZ);

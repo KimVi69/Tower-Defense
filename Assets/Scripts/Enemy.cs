@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour
     public float rangeZ = 10f;
     public float offsetX = 0f;
     public float offsetZ = 0f;
-    private string enemyTag = "Turret";
+    public string enemyTag = "Turret";
     [Range(0f, 1f)]
     public float fireRate = 1f;
     private float fireCountdown = 0f;
@@ -28,9 +28,18 @@ public class Enemy : MonoBehaviour
     private EnemyMovement move;
 
     private bool isDead;
+    public float flipDirection;
 
     void Start()
     {
+        if (BuildManager.instance.isMapFlipped)
+        {
+            sprite.transform.localScale = new Vector3(-sprite.transform.localScale.x, sprite.transform.localScale.y, sprite.transform.localScale.z);
+            offsetX = -offsetX;
+        }
+
+        flipDirection = sprite.transform.localScale.x;
+        startCooldown = false;
         health = maxHealth;
         animator = GetComponent<Animator>();
         move = GetComponent<EnemyMovement>();
@@ -44,11 +53,28 @@ public class Enemy : MonoBehaviour
             move.enabled = false;
             animator.enabled = false;
             healthUI.SetActive(false);
+            return;
         }
 
-        float targetScaleX = flip ? -1f : 1f;
-        float newScaleX = Mathf.MoveTowards(sprite.transform.localScale.x, targetScaleX, Time.deltaTime * flipSpeed);
-        sprite.transform.localScale = new Vector3(newScaleX, 1f, 1f);
+        if (GameManager.gamePaused)
+        {
+            healthUI.SetActive(false);
+            return;
+        }
+
+        if (health < maxHealth)
+        {
+            healthUI.SetActive(true);
+        }
+        else
+        {
+            healthUI.SetActive(false);
+        }
+
+        if (startCooldown && fireCountdown > 0)
+            fireCountdown -= Time.deltaTime;
+
+        Flip();
 
         if (target == null)
         {
@@ -61,29 +87,35 @@ public class Enemy : MonoBehaviour
         if (fireCountdown <= 0f)
         {
             startCooldown = false;
-            bool shouldFlip = target.position.x > gameObject.transform.position.x;
 
-            if (shouldFlip)
+            if (flipDirection * (target.position.x - transform.position.x) > 0)
             {
                 flip = true;
             }
- 
+
             animator.SetTrigger("attack");
 
             fireCountdown = 1f / fireRate;
         }
+    }
 
-        if (startCooldown)
-            fireCountdown -= Time.deltaTime;
+    void Flip()
+    {
+        float targetScaleX = flip ? -flipDirection : flipDirection;
+        float newScaleX = Mathf.MoveTowards(sprite.transform.localScale.x, targetScaleX, Time.deltaTime * flipSpeed);
+        sprite.transform.localScale = new Vector3(newScaleX, sprite.transform.localScale.y, sprite.transform.localScale.z);
     }
 
     public void TakeDamage(int damage)
     {
         health -= damage;
 
-        healthUI.SetActive(true);
-
         healthBar.fillAmount = health / maxHealth;
+
+        if (health > 0)
+        {
+            animator.SetTrigger("hit");
+        }
 
         if (health <= 0 && !isDead)
         {

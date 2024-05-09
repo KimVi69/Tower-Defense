@@ -8,19 +8,12 @@ public class BuildManager : MonoBehaviour
         instance = this;
     }
 
-    public GameObject standardTurretPrefab;
-    public GameObject standardTurretPrefab2;
-    public GameObject standardTurretPrefab3;
-    public GameObject standardTurretPrefab4;
-
-    public GameObject standardTurretButton;
-	public GameObject standardTurret2Button;
-	public GameObject standardTurret3Button;
-    public GameObject standardTurret4Button;
+    public Shop shop;
 
     public GameObject buildEffect;
 
     private TurretBlueprint turretToBuild;
+    public GameObject turretToBuildButton;
 
     private Node selectedNode;
     public NodeUI nodeUI;
@@ -30,14 +23,17 @@ public class BuildManager : MonoBehaviour
     public AudioSource retreatSFX;
     public AudioSource errorSFX;
 
+    public bool isMapFlipped;
+
     public bool turretIsSelected
     {
         get { return turretToBuild != null; }
     }
 
-    public void SelectTurretToBuild(TurretBlueprint turret)
+    public void SelectTurretToBuild(TurretBlueprint turret, GameObject turretButton)
     {
         turretToBuild = turret;
+        turretToBuildButton = turretButton;
         DeselectNode();
         PreviewTurretDestroy();
     }
@@ -55,6 +51,10 @@ public class BuildManager : MonoBehaviour
     {
         PreviewTurretDestroy();
         GameObject turretPreview = Instantiate(turretToBuild.prefab, preview.transform.position, Quaternion.identity);
+        if (isMapFlipped)
+        {
+            turretPreview.transform.localScale = new Vector3(-turretPreview.transform.localScale.x, turretPreview.transform.localScale.y, turretPreview.transform.localScale.z);
+        }
         SetGameLayerRecursive(turretPreview, LayerMask.NameToLayer("Top Layer"));
         if (turretPreview.GetComponent<Turret>() != null)
         {

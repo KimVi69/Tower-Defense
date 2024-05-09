@@ -3,9 +3,8 @@ using UnityEngine.UI;
 
 public class Healer : MonoBehaviour
 {
-    public TurretBlueprint turretBlueprint;
     public GameObject rangeUI;
-    private Transform target;
+    public Transform target;
     private Animator animator;
     public float rangeX = 10f;
     public float rangeZ = 10f;
@@ -15,7 +14,7 @@ public class Healer : MonoBehaviour
     public string targetTag = "Enemy";
     [Range(0f, 1f)]
     public float fireRate = 1f;
-    private float fireCountdown = 0f;
+    public float fireCountdown = 0f;
     private bool flip = false;
     public GameObject sprite;
     public int damage = 50;
@@ -28,9 +27,20 @@ public class Healer : MonoBehaviour
     private float health;
 
     public AudioSource attackSFX;
+    public GameObject healEffect;
+    public float flipDirection;
 
     void Start()
     {
+        if (BuildManager.instance.isMapFlipped)
+        {
+            sprite.transform.localScale = new Vector3(-sprite.transform.localScale.x, sprite.transform.localScale.y, sprite.transform.localScale.z);
+            rangeUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(-rangeUI.GetComponent<RectTransform>().anchoredPosition.x, rangeUI.GetComponent<RectTransform>().anchoredPosition.y);
+            offsetX = -offsetX;
+        }
+
+        flipDirection = sprite.transform.localScale.x;
+        startCooldown = false;
         rangeUI.SetActive(false);
         health = maxHealth;
         animator = GetComponent<Animator>();
@@ -42,9 +52,29 @@ public class Healer : MonoBehaviour
         if (GameManager.gameEnded)
         {
             animator.enabled = false;
-            if (healthUI != null)
-                healthUI.SetActive(false);
+            healthUI.SetActive(false);
+            return;
         }
+
+        if (GameManager.gamePaused)
+        {
+            healthUI.SetActive(false);
+            return;
+        }
+
+        if (health < maxHealth)
+        {
+            healthUI.SetActive(true);
+        }
+        else
+        {
+            healthUI.SetActive(false);
+        }
+
+        if (startCooldown && fireCountdown > 0)
+            fireCountdown -= Time.deltaTime;
+
+        Flip();
 
         if (target == null)
             return;
@@ -52,9 +82,8 @@ public class Healer : MonoBehaviour
         if (fireCountdown <= 0f)
         {
             startCooldown = false;
-            bool shouldFlip = target.position.x < gameObject.transform.position.x;
 
-            if (shouldFlip)
+            if (flipDirection * (target.position.x - transform.position.x) < 0)
             {
                 flip = true;
             }
@@ -67,20 +96,22 @@ public class Healer : MonoBehaviour
 
             fireCountdown = 1f / fireRate;
         }
+    }
 
-        if (startCooldown)
-            fireCountdown -= Time.deltaTime;
-
-        float targetScaleX = flip ? -1f : 1f;
+    public void Flip()
+    {
+        float targetScaleX = flip ? -flipDirection : flipDirection;
         float newScaleX = Mathf.MoveTowards(sprite.transform.localScale.x, targetScaleX, Time.deltaTime * flipSpeed);
-        sprite.transform.localScale = new Vector3(newScaleX, 1f, 1f);
+        sprite.transform.localScale = new Vector3(newScaleX, sprite.transform.localScale.y, sprite.transform.localScale.z);
     }
 
     public void Attack()
     {
         if (target != null)
         {
-            target.gameObject.GetComponent<Turret>().TakeDamage(damage);
+            target.gameObject.GetComponent<Turret>().Heal(damage);
+            GameObject effect = Instantiate(healEffect, target.transform.position, Quaternion.identity);
+            Destroy(effect, 3f);
             attackSFX.Play();
         }
         startCooldown = true;
@@ -107,8 +138,6 @@ public class Healer : MonoBehaviour
 
     public void Die()
     {
-        turretBlueprint.button.SetActive(true);
-        turretBlueprint.button.GetComponent<TurretCooldown>().StartCooldown(turretBlueprint.cooldown, turretBlueprint);
         Destroy(gameObject);
     }
 

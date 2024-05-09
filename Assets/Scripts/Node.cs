@@ -11,7 +11,7 @@ public class Node : MonoBehaviour
     private MaterialPropertyBlock propertyBlock;
 
     public GameObject turret;
-    private TurretBlueprint turretBlueprint;
+    public GameObject turretButton;
 
     BuildManager buildManager;
     [SerializeField]
@@ -36,6 +36,13 @@ public class Node : MonoBehaviour
         else
         {
             CheckAndUpdateColor();
+        }
+
+        if (turret == null && turretButton != null)
+        {
+            turretButton.SetActive(true);
+            turretButton.GetComponent<PartySlot>().cooldownUI.SetActive(true);
+            turretButton = null;
         }
     }
 
@@ -73,13 +80,10 @@ public class Node : MonoBehaviour
         rend.SetPropertyBlock(propertyBlock);
     }
 
-    void BuildTurret(TurretBlueprint blueprint)
+    void BuildTurret(TurretBlueprint blueprint, GameObject button)
     {
         if (PlayerStats.Money < blueprint.cost)
-        {
-            Debug.Log("Not enough Money");
             return;
-        }
 
         PlayerStats.Money -= blueprint.cost;
 
@@ -88,38 +92,23 @@ public class Node : MonoBehaviour
 
         GameObject turret = Instantiate(blueprint.prefab, transform.position, Quaternion.identity);
         this.turret = turret;
-        turretBlueprint = blueprint;
-        if (turret.GetComponent<Turret>() != null)
-        {
-            turret.GetComponent<Turret>().turretBlueprint = turretBlueprint;
-        }
-        else
-        {
-            turret.GetComponent<Healer>().turretBlueprint = turretBlueprint;
-        }
-        buildManager.PlayBuildSFX();
+        turretButton = button;
 
-        blueprint.button.SetActive(false);
+        buildManager.PlayBuildSFX();
+        turretButton.SetActive(false);
 	}
 
     public void SellTurret()
     {
-        if (turret.GetComponent<Turret>() != null)
-        {
-            turret.GetComponent<Turret>().Die();
-        }
-        else
-        {
-            turret.GetComponent<Healer>().Die();
-        } 
-	}
+        Destroy(turret);
+    }
 
     void OnMouseDown()
     {
         if (EventSystem.current.IsPointerOverGameObject())
             return;
 
-        if (turret != null)
+        if (turret != null && turret.GetComponent<Turret>().health > 0)
         {
             buildManager.SelectedNode(this);
             return;
@@ -131,8 +120,8 @@ public class Node : MonoBehaviour
         if (isGround != buildManager.GetTurretToBuild().isGroundTurret)
             return;
 
-        BuildTurret(buildManager.GetTurretToBuild());
-        buildManager.SelectTurretToBuild(null);
+        BuildTurret(buildManager.GetTurretToBuild(), buildManager.turretToBuildButton);
+        buildManager.SelectTurretToBuild(null, null);
     }
 
     void OnMouseEnter()
