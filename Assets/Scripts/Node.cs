@@ -108,10 +108,13 @@ public class Node : MonoBehaviour
         if (EventSystem.current.IsPointerOverGameObject())
             return;
 
-        if (turret != null && turret.GetComponent<Turret>().health > 0)
+        if (turret != null)
         {
-            buildManager.SelectedNode(this);
-            return;
+            if (turret.GetComponent<Turret>() != null && turret.GetComponent<Turret>().health > 0 || turret.GetComponent<Healer>() != null && turret.GetComponent<Healer>().health > 0)
+            {
+                buildManager.SelectedNode(this);
+                return;
+            }
         }
 
         if (!buildManager.turretIsSelected)

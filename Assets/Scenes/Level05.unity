@@ -15415,9 +15415,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   standardTurret:
   - {fileID: 11400000, guid: 5f65aff30892e6146a1aa43231d0c2e8, type: 2}
-  - {fileID: 11400000, guid: 50b8c1477623a814e9c91d6ac6305ca0, type: 2}
   - {fileID: 11400000, guid: 0acb2b38a8f6a9a42b342b4351555a25, type: 2}
   - {fileID: 11400000, guid: 812c65a64b98de8459d9f814adab04ff, type: 2}
+  - {fileID: 11400000, guid: 6d047f4e283c31647a6cb785635e935d, type: 2}
   slots: []
 --- !u!1 &1566688891
 GameObject:

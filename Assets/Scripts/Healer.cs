@@ -24,7 +24,7 @@ public class Healer : MonoBehaviour
     public Image healthBar;
     public GameObject healthUI;
     public float maxHealth = 100;
-    private float health;
+    public float health;
 
     public AudioSource attackSFX;
     public GameObject healEffect;

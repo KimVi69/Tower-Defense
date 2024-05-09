@@ -422,7 +422,7 @@ MonoBehaviour:
   fireCountdown: 0
   flip: 0
   sprite: {fileID: 2496943579883275512}
-  damage: 288
+  damage: 320
   healthBar: {fileID: 3404804753309962530}
   healthUI: {fileID: 8186113073732947183}
   maxHealth: 1330
